@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+*.egg-info/
+
+# Node / React
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+
+# SWI-Prolog compiled
+*.qlf
+
+# OS
+.DS_Store
+Thumbs.db

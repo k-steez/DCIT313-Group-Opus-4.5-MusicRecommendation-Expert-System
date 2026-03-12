@@ -3,6 +3,10 @@ interface Props {
   onChange: (value: string) => void
 }
 
+// cognitive_load maps inversely to lyric complexity:
+//   'low'      → simple/present lyrics  → "With Lyrics"
+//   'high'     → no lyrics needed       → "Instrumental"
+//   'moderate' → no preference          → mix
 const OPTIONS = [
   {
     value: 'low',
