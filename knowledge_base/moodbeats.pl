@@ -14,8 +14,11 @@ run(Mood, Activity, CognitiveLoad, PlaylistSize) :-
     explain_all(Playlist, Mood, Activity, CognitiveLoad).
 
 print_playlist([], _).
-print_playlist([Track|Rest], Index) :-
-    format("~w. ~w~n", [Index, Track]),
+print_playlist([TrackId|Rest], Index) :-
+    ( song(TrackId, Title, Artist, _BPM, _Energy, _Instr, _Valence, _Tone, _Complexity)
+    ->  format("~w. ~w — ~w~n", [Index, Title, Artist])
+    ;   format("~w. ~w~n", [Index, TrackId])
+    ),
     Next is Index + 1,
     print_playlist(Rest, Next).
 

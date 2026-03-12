@@ -1,14 +1,15 @@
 % knowledge_base/explanation.pl
 
-%% explain(+Track, +Mood, +Activity, +CognitiveLoad)
+%% explain(+TrackId, +Mood, +Activity, +CognitiveLoad)
 %
-%  Prints a full human-readable explanation for why Track was selected
+%  Prints a full human-readable explanation for why TrackId was selected
 %  for the given Mood, Activity, and CognitiveLoad.
-explain(Track, Mood, Activity, CognitiveLoad) :-
-    song(Track, Valence, Energy, BPM, Tone, LyricComplexity),
-    mood_profile(Mood, ValenceLow, ValenceHigh, EnergyLow, EnergyHigh, MoodTone),
+explain(TrackId, Mood, Activity, CognitiveLoad) :-
+    song(TrackId, Title, Artist, BPM, Energy, _Instr, Valence, Tone, LyricComplexity),
+    mood_profile(Mood, ValenceLow, ValenceHigh, EnergyLow, EnergyHigh, MoodTones),
     activity_profile(Activity, ActMinBPM, ActMaxBPM),
-    format("~n--- ~w ---~n", [Track]),
+    format("~n--- ~w - ~w ---~n", [Title, Artist]),
+    format("  Track ID       : ~w~n", [TrackId]),
     format("  Mood targeted  : ~w~n", [Mood]),
     format("  Activity       : ~w~n", [Activity]),
     format("  Cognitive load : ~w~n", [CognitiveLoad]),
@@ -22,8 +23,8 @@ explain(Track, Mood, Activity, CognitiveLoad) :-
     explain_in_range(Energy, EnergyLow, EnergyHigh, energy),
     format("~n  [Tone]~n"),
     format("    Song tone    : ~w~n", [Tone]),
-    format("    Mood tone    : ~w~n", [MoodTone]),
-    ( tone_compatible(Tone, MoodTone)
+    format("    Mood tones   : ~w~n", [MoodTones]),
+    ( tone_compatible(Tone, MoodTones)
     ->  format("    Compatible   : yes~n")
     ;   format("    Compatible   : no~n")
     ),
