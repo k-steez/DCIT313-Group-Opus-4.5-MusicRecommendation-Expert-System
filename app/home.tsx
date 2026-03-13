@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../store/useStore';
 
 const { width } = Dimensions.get('window');
 
@@ -38,7 +39,8 @@ const MOODS = [
 ];
 
 export default function HomeScreen() {
-  const [selectedMood, setSelectedMood] = useState<string | null>('happy');
+  const { mood: storeMood, setMood } = useStore();
+  const [selectedMood, setSelectedMood] = useState<string | null>(storeMood || 'happy');
 
   return (
     <LinearGradient 
@@ -124,7 +126,10 @@ export default function HomeScreen() {
           <TouchableOpacity 
             style={styles.continueButtonContainer} 
             activeOpacity={0.9} 
-            onPress={() => router.push('/activitySelection')}
+            onPress={() => {
+              if (selectedMood) setMood(selectedMood);
+              router.push('/activitySelection');
+            }}
           >
             <LinearGradient
               colors={['#A800FF', '#FF007F']}
