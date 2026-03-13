@@ -11,6 +11,8 @@ import Animated, {
   withSequence,
   Easing
 } from 'react-native-reanimated';
+import { useStore } from '../store/useStore';
+import { fetchRecommendations } from '../services/api';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +26,7 @@ const LOADING_MESSAGES = [
 
 export default function LoadingScreen() {
   const [messageIndex, setMessageIndex] = useState(0);
+  const { mood, activity, lyricPreference, playlistLength, setPlaylist } = useStore();
   
   // Animation values
   const progressWidth = useSharedValue(0);
@@ -61,14 +64,34 @@ export default function LoadingScreen() {
       setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
     }, 1200);
 
-    // 4. Navigate to the final playlist screen after 4 seconds
-    const timeout = setTimeout(() => {
-      router.replace('/playlist');
-    }, 4200);
+    // 4. Fetch the recommendations in the background
+    let isMounted = true;
+    const fetchMusic = async () => {
+      try {
+        // We ensure mood string exists, default to 'happy'
+        const safeMood = mood || 'happy';
+        const result = await fetchRecommendations(safeMood, activity || 'studying', lyricPreference, playlistLength);
+        
+        if (isMounted) {
+          setPlaylist(result);
+          router.replace('/playlist');
+        }
+      } catch (e) {
+        console.error("Error fetching recommendations: ", e);
+        if (isMounted) {
+          router.replace('/playlist'); // Navigate anyway, empty list will handle it
+        }
+      }
+    };
+    
+    // We add an artificial min delay so the user still sees the beautiful animations
+    setTimeout(() => {
+      fetchMusic();
+    }, 2500);
 
     return () => {
+      isMounted = false;
       clearInterval(messageInterval);
-      clearTimeout(timeout);
     };
   }, []);
 

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../store/useStore';
 
 const { width } = Dimensions.get('window');
 
@@ -21,8 +22,9 @@ const PLAYLIST_LENGTHS = [
 ];
 
 export default function PreferencesScreen() {
-  const [lyricPreference, setLyricPreference] = useState<string>('with_lyrics');
-  const [playlistLength, setPlaylistLength] = useState<number>(10);
+  const { lyricPreference: storeLyric, playlistLength: storeLength, setPreferences } = useStore();
+  const [lyricPreference, setLyricPreference] = useState<string>(storeLyric || 'with_lyrics');
+  const [playlistLength, setPlaylistLength] = useState<number>(storeLength || 10);
 
   return (
     <LinearGradient 
@@ -166,7 +168,10 @@ export default function PreferencesScreen() {
           <TouchableOpacity 
             style={styles.continueButtonContainer} 
             activeOpacity={0.9}
-            onPress={() => router.push('/loading')}
+            onPress={() => {
+              setPreferences(lyricPreference, playlistLength);
+              router.push('/loading');
+            }}
           >
             <LinearGradient
               colors={['#A800FF', '#FF007F']}

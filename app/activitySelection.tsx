@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../store/useStore';
 
 const { width } = Dimensions.get('window');
 
@@ -34,7 +35,8 @@ const ACTIVITIES = [
 ];
 
 export default function ActivitySelectionScreen() {
-  const [selectedActivity, setSelectedActivity] = useState<string | null>('studying');
+  const { activity: storeActivity, setActivity } = useStore();
+  const [selectedActivity, setSelectedActivity] = useState<string | null>(storeActivity || 'studying');
 
   return (
     <LinearGradient 
@@ -117,7 +119,10 @@ export default function ActivitySelectionScreen() {
           <TouchableOpacity 
             style={styles.continueButtonContainer} 
             activeOpacity={0.9}
-            onPress={() => router.push('/preferences')}
+            onPress={() => {
+              if (selectedActivity) setActivity(selectedActivity);
+              router.push('/preferences');
+            }}
           >
             <LinearGradient
               colors={['#00A8A8', '#007A7A']}

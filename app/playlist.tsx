@@ -4,26 +4,21 @@ import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useStore } from '../store/useStore';
 
-// Mock Data
-const PLAYLIST = [
-  {
-    id: '1',
-    title: 'I Own This',
-    artist: 'Boss Mode',
-    image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80',
-    tags: ['Hip Hop', '100 BPM']
-  },
-  {
-    id: '2',
-    title: 'Rise Above',
-    artist: 'Champions',
-    image: 'https://images.unsplash.com/photo-1493225457124-a1a2a5f5cb32?w=400&q=80',
-    tags: ['Hip Hop', '95 BPM']
-  }
-];
+// Removed the mock playlist since we use the real one
 
 export default function PlaylistScreen() {
+  const { playlist, mood, activity, lyricPreference } = useStore();
+  
+  // Format preference labels
+  const getLyricLabel = (pref: string) => {
+    switch (pref) {
+      case 'with_lyrics': return 'With Lyrics';
+      case 'instrumental': return 'Instrumental';
+      default: return 'No Preference';
+    }
+  };
   return (
     <LinearGradient 
       colors={['#ffffff', '#fcf8ff', '#fdfaff']} 
@@ -62,19 +57,19 @@ export default function PlaylistScreen() {
             <View style={styles.summaryGrid}>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Mood</Text>
-                <Text style={styles.summaryValue}>Happy</Text>
+                <Text style={styles.summaryValue}>{mood ? mood.charAt(0).toUpperCase() + mood.slice(1) : 'Any'}</Text>
               </View>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Activity</Text>
-                <Text style={styles.summaryValue}>Studying</Text>
+                <Text style={styles.summaryValue}>{activity ? activity.charAt(0).toUpperCase() + activity.slice(1).replace('_', ' ') : 'Any'}</Text>
               </View>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Lyrics</Text>
-                <Text style={styles.summaryValue}>With Lyrics</Text>
+                <Text style={styles.summaryValue}>{getLyricLabel(lyricPreference)}</Text>
               </View>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Songs</Text>
-                <Text style={styles.summaryValue}>2 tracks</Text>
+                <Text style={styles.summaryValue}>{playlist.length} tracks</Text>
               </View>
             </View>
           </LinearGradient>
@@ -88,38 +83,45 @@ export default function PlaylistScreen() {
 
           {/* Song List */}
           <View style={styles.songList}>
-            {PLAYLIST.map((song) => (
-              <View key={song.id} style={styles.songCard}>
-                
-                <View style={styles.songInfoRow}>
-                  <Image source={{ uri: song.image }} style={styles.songImage} />
-                  <View style={styles.songDetails}>
-                    <Text style={styles.songTitle}>{song.title}</Text>
-                    <Text style={styles.songArtist}>{song.artist}</Text>
-                    
-                    <View style={styles.tagRow}>
-                      {song.tags.map((tag, index) => (
-                        <View key={index} style={styles.tag}>
-                          <Text style={styles.tagText}>{tag}</Text>
+            {playlist.length === 0 ? (
+               <Text style={{textAlign: 'center', marginTop: 20, color: '#6b7280'}}>No songs found for this configuration.</Text>
+            ) : (
+              playlist.map((song) => (
+                <View key={song.id} style={styles.songCard}>
+                  
+                  <View style={styles.songInfoRow}>
+                    <View style={styles.songImagePlaceholder}>
+                      <Feather name="music" size={32} color="#9ca3af" />
+                    </View>
+                    <View style={styles.songDetails}>
+                      <Text style={styles.songTitle}>{song.title}</Text>
+                      <Text style={styles.songArtist}>{song.artist}</Text>
+                      
+                      <View style={styles.tagRow}>
+                        <View style={styles.tag}>
+                           <Text style={styles.tagText}>{song.bpm} BPM</Text>
                         </View>
-                      ))}
+                        <View style={styles.tagAccent}>
+                           <Text style={styles.tagTextAccent}>{song.mood}</Text>
+                        </View>
+                      </View>
                     </View>
                   </View>
-                </View>
 
-                <View style={styles.actionRow}>
-                  <TouchableOpacity style={styles.spotifyButton}>
-                    <Feather name="play" size={16} color="#ffffff" style={{ marginRight: 8 }} />
-                    <Text style={styles.spotifyButtonText}>Play on Spotify</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity style={styles.helpButton}>
-                    <Feather name="help-circle" size={20} color="#4b5563" />
-                  </TouchableOpacity>
-                </View>
+                  <View style={styles.actionRow}>
+                    <TouchableOpacity style={styles.spotifyButton}>
+                      <Feather name="play" size={16} color="#ffffff" style={{ marginRight: 8 }} />
+                      <Text style={styles.spotifyButtonText}>Play on Spotify</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style={styles.helpButton}>
+                      <Feather name="help-circle" size={20} color="#4b5563" />
+                    </TouchableOpacity>
+                  </View>
 
-              </View>
-            ))}
+                </View>
+              ))
+            )}
           </View>
 
           {/* Bottom spacing for fixed button */}
@@ -248,12 +250,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 16,
   },
-  songImage: {
+  songImagePlaceholder: {
     width: 80,
     height: 80,
     borderRadius: 12,
     marginRight: 16,
     backgroundColor: '#f3f4f6',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   songDetails: {
     flex: 1,
@@ -284,6 +288,18 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 12,
     color: '#A855F7',
+    fontWeight: '600',
+  },
+  tagAccent: {
+    backgroundColor: '#fce7f3',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 8,
+  },
+  tagTextAccent: {
+    fontSize: 12,
+    color: '#be185d',
     fontWeight: '600',
   },
   actionRow: {
