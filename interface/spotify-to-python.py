@@ -638,7 +638,7 @@ def write_prolog_facts(all_tracks, output_path="songs_kb.pl"):
             r"([a-zA-Z_][a-zA-Z0-9_]*)\)\.\s*$"
         )
         try:
-            with open(output_path, "r") as f_in:
+            with open(output_path, "r", encoding="utf-8") as f_in:
                 for line in f_in:
                     m = fact_re.match(line.strip())
                     if not m:
