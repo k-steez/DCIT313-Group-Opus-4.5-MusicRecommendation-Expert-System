@@ -1,0 +1,6 @@
+[project]
+name = "dcit313-group-opus-4-5-musicrecommendation-expert-system"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = []
