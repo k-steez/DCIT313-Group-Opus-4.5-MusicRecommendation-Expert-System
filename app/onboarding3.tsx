@@ -7,16 +7,16 @@ import {Ionicons} from "@expo/vector-icons"
 const { width, height } = Dimensions.get("window");
 
 
+export default function Onboarding3() {
 
-export default function Onboarding2() {
+    const nextPage = () => {
+        router.push("/onboarding4")
+    }
 
-  const nextPage =() => {
-    router.push("/onboarding3")
-  };
-
-  const onSkip = () => {
+    const onSkip = () => {
         router.push("/home")
     }
+
   return (
      <ImageBackground 
           source={img} 
@@ -29,15 +29,15 @@ export default function Onboarding2() {
           <Text style={styles.skip}>Skip</Text>
         </TouchableOpacity>
         <View style={styles.musicIcon}>
-          <Ionicons name="musical-notes-outline" color={"#FFFFFF"} size={60}/>
+          <Ionicons name="musical-note" color={"#FFFFFF"} size={60}/>
         </View>
 
         <Text style={styles.title}>
-          Tell us how you feel
+          Tell us what you are doing
         </Text>
 
         <Text style={styles.text}>
-          Choose from 15 different moods to match your emotional state
+          Select your current activity for perfectly matched music
         </Text>
 
         <Button title="Next" onPress={nextPage}/>

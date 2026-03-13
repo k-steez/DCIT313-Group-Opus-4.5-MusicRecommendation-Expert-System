@@ -7,14 +7,13 @@ import {Ionicons} from "@expo/vector-icons"
 const { width, height } = Dimensions.get("window");
 
 
+export default function Onboarding3() {
 
-export default function Onboarding2() {
+    const goToHome = () => {
+        router.push("/home")
+    }
 
-  const nextPage =() => {
-    router.push("/onboarding3")
-  };
-
-  const onSkip = () => {
+    const onSkip = () => {
         router.push("/home")
     }
   return (
@@ -29,18 +28,33 @@ export default function Onboarding2() {
           <Text style={styles.skip}>Skip</Text>
         </TouchableOpacity>
         <View style={styles.musicIcon}>
-          <Ionicons name="musical-notes-outline" color={"#FFFFFF"} size={60}/>
+          <Ionicons name="musical-note" color={"#FFFFFF"} size={60}/>
         </View>
 
         <Text style={styles.title}>
-          Tell us how you feel
+          We curate intelligently
         </Text>
 
         <Text style={styles.text}>
-          Choose from 15 different moods to match your emotional state
+          Our expert system uses music psychology to recommend the perfect playlist
         </Text>
 
-        <Button title="Next" onPress={nextPage}/>
+        <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button} >
+                <Text style={styles.buttonText}>Mood</Text>
+            </TouchableOpacity>
+            <Ionicons name="chevron-forward" color={"#FFFFFF"} size={30} style={styles.icon}/>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Activity</Text>
+            </TouchableOpacity>
+            <Ionicons name="chevron-forward" color={"#FFFFFF"} size={30} style={styles.icon}/>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Playlist</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.nextContainer}>
+            <Button title="Next" onPress={goToHome}/>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -51,11 +65,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom:30
   },
   skip: {
     color:"#FFFFFF",
     position:"relative",
-    top:-180,
+    top:-140,
     right:-30,
     left:150,
     bottom:100
@@ -78,6 +93,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     marginTop: 10,
+    marginBottom:10,
     color:"#FFFFFF"
   },
   background: {
@@ -85,4 +101,24 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
   },
+  buttonsContainer:{
+    gap:15,
+    flexDirection:"row",
+
+  },
+  buttonText:{
+    color:"#FFFFFF",
+  },
+  button: {
+    backgroundColor:"#E8E8E8",
+    padding: 15,
+    borderRadius:15
+  },
+  icon: {
+    marginTop:10
+  },
+  nextContainer: {
+    marginBottom:25,
+    width:"100%"
+  }
 });

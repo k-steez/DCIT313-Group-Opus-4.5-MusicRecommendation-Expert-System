@@ -7,42 +7,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
-const MOODS = [
+const ACTIVITIES = [
   {
-    category: 'High Energy Positive',
+    category: 'Cognitive/Productive',
     items: [
-      { id: 'happy', emoji: '😊', label: 'Happy' },
-      { id: 'energetic', emoji: '⚡', label: 'Energetic' },
-      { id: 'motivated', emoji: '🔥', label: 'Motivated' },
-      { id: 'confident', emoji: '💪', label: 'Confident' },
+      { id: 'studying', emoji: '📚', label: 'Studying' },
+      { id: 'deep_work', emoji: '💻', label: 'Deep Work' },
+      { id: 'light_work', emoji: '✏️', label: 'Light Work' },
     ]
   },
   {
-    category: 'High Energy Negative',
+    category: 'Physical',
     items: [
-      { id: 'angry', emoji: '😤', label: 'Angry' },
-      { id: 'anxious', emoji: '😰', label: 'Anxious' },
-      { id: 'frustrated', emoji: '😫', label: 'Frustrated' },
-      { id: 'overwhelmed', emoji: '😵‍💫', label: 'Overwhelmed' },
+      { id: 'working_out', emoji: '🏃‍♂️', label: 'Working Out' },
+      { id: 'commuting', emoji: '🚗', label: 'Commuting' },
+      { id: 'chores', emoji: '🧹', label: 'Chores' },
     ]
   },
   {
-    category: 'Low Energy Positive',
+    category: 'Emotional/Social',
     items: [
-      { id: 'calm', emoji: '😌', label: 'Calm' },
-      { id: 'relaxed', emoji: '🛋️', label: 'Relaxed' },
-      { id: 'peaceful', emoji: '🕊️', label: 'Peaceful' },
-      { id: 'content', emoji: '☺️', label: 'Content' },
+      { id: 'hanging_out', emoji: '🗣️', label: 'Hanging Out' },
+      { id: 'date', emoji: '❤️', label: 'Date' },
     ]
   }
 ];
 
-export default function HomeScreen() {
-  const [selectedMood, setSelectedMood] = useState<string | null>('happy');
+export default function ActivitySelectionScreen() {
+  const [selectedActivity, setSelectedActivity] = useState<string | null>('studying');
 
   return (
     <LinearGradient 
-      colors={['#eef2ff', '#faf5ff', '#ffffff']} 
+      colors={['#eef7fa', '#f0fbfa', '#ffffff']} 
       style={styles.container}
       locations={[0, 0.3, 0.6]}
     >
@@ -50,18 +46,15 @@ export default function HomeScreen() {
         
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logoText}>MoodBeats</Text>
-          <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton}>
-              <Feather name="clock" size={20} color="#4b5563" />
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.iconButton}
-              onPress={() => router.push('/settings')}
-            >
-              <Feather name="settings" size={20} color="#4b5563" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Feather name="chevron-left" size={24} color="#374151" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Activity Selection</Text>
+          {/* Invisible view for centering the title */}
+          <View style={{ width: 44 }} />
         </View>
 
         {/* Scroll Content */}
@@ -69,15 +62,15 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.title}>How are you{'\n'}feeling right now?</Text>
-          <Text style={styles.subtitle}>Select your current mood to get started</Text>
+          <Text style={styles.title}>What are you doing?</Text>
+          <Text style={styles.subtitle}>Choose your current activity</Text>
 
-          {MOODS.map((section) => (
+          {ACTIVITIES.map((section) => (
             <View key={section.category} style={styles.section}>
               <Text style={styles.sectionTitle}>{section.category}</Text>
               <View style={styles.grid}>
                 {section.items.map((item) => {
-                  const isSelected = selectedMood === item.id;
+                  const isSelected = selectedActivity === item.id;
                   return (
                     <TouchableOpacity 
                       key={item.id} 
@@ -86,11 +79,11 @@ export default function HomeScreen() {
                         !isSelected && styles.cardShadow
                       ]}
                       activeOpacity={0.8}
-                      onPress={() => setSelectedMood(item.id)}
+                      onPress={() => setSelectedActivity(item.id)}
                     >
                       {isSelected ? (
                         <LinearGradient
-                          colors={['#FFB703', '#FB8500']}
+                          colors={['#13C2C2', '#008585']}
                           style={styles.card}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
@@ -123,11 +116,11 @@ export default function HomeScreen() {
         >
           <TouchableOpacity 
             style={styles.continueButtonContainer} 
-            activeOpacity={0.9} 
-            onPress={() => router.push('/activitySelection')}
+            activeOpacity={0.9}
+            onPress={() => router.push('/preferences')}
           >
             <LinearGradient
-              colors={['#A800FF', '#FF007F']}
+              colors={['#00A8A8', '#007A7A']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.continueButton}
@@ -157,17 +150,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 20,
   },
-  logoText: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#D900FF',
-    letterSpacing: -0.5,
-  },
-  headerIcons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  iconButton: {
+  backButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -182,6 +165,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#f9fafb',
   },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1f2937',
+  },
   scrollContent: {
     paddingHorizontal: 24,
     paddingBottom: 40,
@@ -193,7 +181,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
     marginBottom: 12,
-    lineHeight: 40,
   },
   subtitle: {
     fontSize: 16,
@@ -268,7 +255,7 @@ const styles = StyleSheet.create({
     paddingBottom: 34,
   },
   continueButtonContainer: {
-    shadowColor: '#FF007F',
+    shadowColor: '#008585',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
