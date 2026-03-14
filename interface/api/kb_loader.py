@@ -24,7 +24,8 @@ def load_songs_kb(path: str = "songs_kb.pl") -> List[Song]:
     if not os.path.exists(path):
         return songs
 
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
+        
         for line in f:
             m = FACT_RE.match(line.strip())
             if not m:
