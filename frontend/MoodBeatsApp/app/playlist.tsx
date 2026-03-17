@@ -1,16 +1,60 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from '../store/useStore';
 
-// Removed the mock playlist since we use the real one
+// Simple cache for album art URLs to avoid re-fetching
+const albumArtCache: Record<string, string> = {};
+
+function SpotifyAlbumArt({ trackId }: { trackId: string }) {
+  const [imageUrl, setImageUrl] = useState<string | null>(albumArtCache[trackId] || null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (albumArtCache[trackId]) {
+      setImageUrl(albumArtCache[trackId]);
+      return;
+    }
+
+    let cancelled = false;
+    fetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/track/${trackId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!cancelled && data.thumbnail_url) {
+          albumArtCache[trackId] = data.thumbnail_url;
+          setImageUrl(data.thumbnail_url);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+
+    return () => { cancelled = true; };
+  }, [trackId]);
+
+  if (failed || !imageUrl) {
+    return (
+      <View style={styles.songImagePlaceholder}>
+        <Feather name="music" size={32} color="#9ca3af" />
+      </View>
+    );
+  }
+
+  return (
+    <Image
+      source={{ uri: imageUrl }}
+      style={styles.songImage}
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 export default function PlaylistScreen() {
   const { playlist, mood, activity, lyricPreference } = useStore();
-  
+
   // Format preference labels
   const getLyricLabel = (pref: string) => {
     switch (pref) {
@@ -20,15 +64,15 @@ export default function PlaylistScreen() {
     }
   };
   return (
-    <LinearGradient 
-      colors={['#ffffff', '#fcf8ff', '#fdfaff']} 
+    <LinearGradient
+      colors={['#ffffff', '#fcf8ff', '#fdfaff']}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
-        
+
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.iconButton}
             onPress={() => router.push('/home')} // Route back to the beginning for standard flow
           >
@@ -41,7 +85,7 @@ export default function PlaylistScreen() {
         </View>
 
         {/* Scroll Content */}
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
@@ -53,7 +97,7 @@ export default function PlaylistScreen() {
             style={styles.summaryCard}
           >
             <Text style={styles.summaryTitle}>Your MoodBeats Playlist</Text>
-            
+
             <View style={styles.summaryGrid}>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Mood</Text>
@@ -84,36 +128,42 @@ export default function PlaylistScreen() {
           {/* Song List */}
           <View style={styles.songList}>
             {playlist.length === 0 ? (
-               <Text style={{textAlign: 'center', marginTop: 20, color: '#6b7280'}}>No songs found for this configuration.</Text>
+              <Text style={{ textAlign: 'center', marginTop: 20, color: '#6b7280' }}>No songs found for this configuration.</Text>
             ) : (
               playlist.map((song) => (
                 <View key={song.id} style={styles.songCard}>
-                  
+
                   <View style={styles.songInfoRow}>
-                    <View style={styles.songImagePlaceholder}>
-                      <Feather name="music" size={32} color="#9ca3af" />
-                    </View>
+                    <SpotifyAlbumArt trackId={song.id} />
                     <View style={styles.songDetails}>
                       <Text style={styles.songTitle}>{song.title}</Text>
                       <Text style={styles.songArtist}>{song.artist}</Text>
-                      
+
                       <View style={styles.tagRow}>
                         <View style={styles.tag}>
-                           <Text style={styles.tagText}>{song.bpm} BPM</Text>
+                          <Text style={styles.tagText}>{song.bpm} BPM</Text>
                         </View>
                         <View style={styles.tagAccent}>
-                           <Text style={styles.tagTextAccent}>{song.mood}</Text>
+                          <Text style={styles.tagTextAccent}>{song.mood}</Text>
                         </View>
                       </View>
                     </View>
                   </View>
 
                   <View style={styles.actionRow}>
-                    <TouchableOpacity style={styles.spotifyButton}>
+                    <TouchableOpacity
+                      style={styles.spotifyButton}
+                      onPress={() => {
+                        const spotifyUrl = `https://open.spotify.com/track/${song.id}`;
+                        Linking.openURL(spotifyUrl).catch(err =>
+                          console.error('Failed to open Spotify:', err)
+                        );
+                      }}
+                    >
                       <Feather name="play" size={16} color="#ffffff" style={{ marginRight: 8 }} />
                       <Text style={styles.spotifyButtonText}>Play on Spotify</Text>
                     </TouchableOpacity>
-                    
+
                     <TouchableOpacity style={styles.helpButton}>
                       <Feather name="help-circle" size={20} color="#4b5563" />
                     </TouchableOpacity>
@@ -259,6 +309,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  songImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    marginRight: 16,
+  },
   songDetails: {
     flex: 1,
     justifyContent: 'center',
@@ -362,6 +418,6 @@ const styles = StyleSheet.create({
   rateButtonText: {
     color: '#ffffff',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "700",
   },
 });

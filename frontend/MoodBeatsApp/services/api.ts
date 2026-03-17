@@ -14,7 +14,7 @@ export interface Song {
 
 // Using your computer's local IP address so the physical phone can connect to the backend
 // IMPORTANT: Update this IP if you switch WiFi networks! Run `ipconfig` to find your current IPv4.
-const API_BASE_URL = 'http://10.21.90.2:8000';
+const API_BASE_URL = 'http://192.168.100.103:8000';
 
 export async function fetchRecommendations(
   mood: string,
