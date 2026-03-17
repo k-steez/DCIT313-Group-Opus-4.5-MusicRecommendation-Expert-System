@@ -12,10 +12,9 @@ export interface Song {
   lyric_tone: string;
 }
 
-// Ensure correct local network URL for Android emulators vs iOS/Web
-const API_BASE_URL = Platform.OS === 'android' 
-  ? 'http://10.0.2.2:8000' 
-  : 'http://localhost:8000';
+// Using your computer's local IP address so the physical phone can connect to the backend
+// IMPORTANT: Update this IP if you switch WiFi networks! Run `ipconfig` to find your current IPv4.
+const API_BASE_URL = 'http://10.21.90.2:8000';
 
 export async function fetchRecommendations(
   mood: string,

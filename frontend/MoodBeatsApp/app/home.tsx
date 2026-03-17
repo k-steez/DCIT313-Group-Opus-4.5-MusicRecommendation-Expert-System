@@ -23,17 +23,12 @@ const MOODS = [
     items: [
       { id: 'angry', emoji: '😤', label: 'Angry' },
       { id: 'anxious', emoji: '😰', label: 'Anxious' },
-      { id: 'frustrated', emoji: '😫', label: 'Frustrated' },
-      { id: 'overwhelmed', emoji: '😵‍💫', label: 'Overwhelmed' },
     ]
   },
   {
     category: 'Low Energy Positive',
     items: [
       { id: 'calm', emoji: '😌', label: 'Calm' },
-      { id: 'relaxed', emoji: '🛋️', label: 'Relaxed' },
-      { id: 'peaceful', emoji: '🕊️', label: 'Peaceful' },
-      { id: 'content', emoji: '☺️', label: 'Content' },
     ]
   }
 ];
