@@ -1,6 +1,6 @@
 [project]
 name = "dcit313-group-opus-4-5-musicrecommendation-expert-system"
 version = "0.1.0"
-description = "Add your description here"
+description = "Expert system designed for music recommendation based on user mood and fallback to user activity for more robust performance."
 requires-python = ">=3.13"
 dependencies = []
