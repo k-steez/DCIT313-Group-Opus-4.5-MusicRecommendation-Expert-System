@@ -1,13 +1,13 @@
 # DCIT313-Group-Opus-4.5-MusicRecommendation-Expert-System
 
 ## Group members:
-1. Jarawura Williams Koyiri - 22013675
-2. Commey Jude Nii Klemesu - 22043189
-3. Dartey Natasha Armahbea -22125001
-4. Cyril Nii Teiko Tagoe - 22241994
-5. Amoako Benedict Acheampong - 22046313
-6. Apeani Ann Timah- 22121034
-7. Amoah Kwame Adjei - 22033203
+1. Jarawura Williams Koyiri - 22013675 - Williams-web
+2. Commey Jude Nii Klemesu - 22043189 - niicommey01
+3. Dartey Natasha Armahbea -22125001- DarteyNatasha
+4. Cyril Nii Teiko Tagoe - 22241994 - Cyril-Nii
+5. Amoako Benedict Acheampong - 22046313 - primeyloa
+6. Apeani Ann Timah- 22121034- graccccyyyyyann
+7. Amoah Kwame Adjei - 22033203 - k-steez
 
 
 # Project Overview and Purpose
