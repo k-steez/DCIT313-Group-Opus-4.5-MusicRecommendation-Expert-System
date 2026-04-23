@@ -23,15 +23,14 @@ playlist delivered through a simple, accessible user interface. The system is in
 supporting emotional regulation. 
 
 # Team Roles
-### Project Manager : Kwame Adjei Amoah
+### Project Manager : Amoah Kwame Adjei
 
  ## Knowledge Engineers:
-   ### ● Benedict Acheampong Amoako
-   ### ● Jude Nii Klemesu Commey
+   ### ● Amoako Benedict Acheampong
    
  ## Programmers:
-   ### ● Natasha Armahbea Dartey
+   ### ● Dartey Natasha Armahbea
    ### ● Cyril Nii Teiko Cyril
-   ### ● Williams Koyiri Jarawura
-   ### ● Ann Timah Apeani
+   ### ● Jarawura Williams Koyiri
+   ### ●  Apeani Ann Timah
 
